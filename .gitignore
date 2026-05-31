@@ -1,0 +1,15 @@
+.env
+*.json
+!queue_example.json
+__pycache__/
+*.pyc
+*.pyo
+*.wav
+*.tmp
+suno_profile/
+chrome_profile/
+cookies/
+output/
+*.log
+.DS_Store
+Thumbs.db
