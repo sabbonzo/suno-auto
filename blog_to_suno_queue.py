@@ -10,8 +10,10 @@ from pathlib import Path
 
 sys.stdout.reconfigure(encoding="utf-8")
 
-BLOG_FILE  = Path("os.getenv("MUSIC_DIR", str(Path.home() / "MusicaBusiness"))/blog_posts_sabbonzo.json")
-QUEUE_FILE = Path("os.getenv("MUSIC_DIR", str(Path.home() / "MusicaBusiness"))/suno_queue_from_blog.json")
+MUSIC_DIR = Path(os.getenv("MUSIC_DIR", str(Path.home() / "MusicaBusiness")))
+
+BLOG_FILE  = MUSIC_DIR / "blog_posts_sabbonzo.json"
+QUEUE_FILE = MUSIC_DIR / "suno_queue_from_blog.json"
 
 # Mappa parole chiave nel titolo → stile Suno
 STYLE_MAP = [

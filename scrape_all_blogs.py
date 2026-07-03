@@ -10,7 +10,9 @@ from datetime import datetime
 from urllib.parse import urlencode
 
 sys.stdout.reconfigure(encoding="utf-8")
-sys.path.insert(0, "os.getenv("MUSIC_DIR", str(Path.home() / "MusicaBusiness"))")
+
+MUSIC_DIR = Path(os.getenv("MUSIC_DIR", str(Path.home() / "MusicaBusiness")))
+sys.path.insert(0, str(MUSIC_DIR))
 
 BLOGS = [
     {"id": "sabbonzo",      "url": "https://sabbonzo.blogspot.com",     "theme": "diary"},
@@ -19,8 +21,8 @@ BLOGS = [
     {"id": "darksun2009",   "url": "https://darksun2009.blogspot.com",   "theme": "dark_fantasy"},
 ]
 
-BLOG_POSTS_DIR = Path("os.getenv("MUSIC_DIR", str(Path.home() / "MusicaBusiness"))/blog_posts")
-QUEUE_MASTER   = Path("os.getenv("MUSIC_DIR", str(Path.home() / "MusicaBusiness"))/suno_queue_master.json")
+BLOG_POSTS_DIR = MUSIC_DIR / "blog_posts"
+QUEUE_MASTER   = MUSIC_DIR / "suno_queue_master.json"
 
 
 def clean_html(raw):

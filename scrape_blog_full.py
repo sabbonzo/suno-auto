@@ -14,8 +14,10 @@ from urllib.parse import urlencode
 
 sys.stdout.reconfigure(encoding="utf-8")
 
+MUSIC_DIR = Path(os.getenv("MUSIC_DIR", str(Path.home() / "MusicaBusiness")))
+
 BLOG_URL  = "https://sabbonzo.blogspot.com"
-OUT_DIR   = Path("os.getenv("MUSIC_DIR", str(Path.home() / "MusicaBusiness"))/blog_posts/sabbonzo")
+OUT_DIR   = MUSIC_DIR / "blog_posts/sabbonzo"
 INDEX_FILE = OUT_DIR / "_INDEX.json"
 
 OUT_DIR.mkdir(parents=True, exist_ok=True)

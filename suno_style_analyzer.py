@@ -15,7 +15,9 @@ from datetime import datetime, timedelta
 
 sys.stdout.reconfigure(encoding="utf-8", line_buffering=True)
 
-BASE          = Path("os.getenv("MUSIC_DIR", str(Path.home() / "MusicaBusiness"))")
+MUSIC_DIR = Path(os.getenv("MUSIC_DIR", str(Path.home() / "MusicaBusiness")))
+
+BASE          = MUSIC_DIR
 QUEUE_F       = BASE / "suno_queue_master.json"
 LOCAL_F       = BASE / "suno_local_queue.json"
 DISTRO        = BASE / "DISTRO_READY"

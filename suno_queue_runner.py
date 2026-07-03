@@ -14,17 +14,20 @@ from datetime import datetime
 
 sys.stdout.reconfigure(encoding="utf-8")
 
+MUSIC_DIR = Path(os.getenv("MUSIC_DIR", str(Path.home() / "MusicaBusiness")))
+
 from playwright.async_api import async_playwright
 
 # Usa queue master se disponibile, altrimenti legacy
-_QM = Path("os.getenv("MUSIC_DIR", str(Path.home() / "MusicaBusiness"))/suno_queue_master.json")
-_QL = Path("os.getenv("MUSIC_DIR", str(Path.home() / "MusicaBusiness"))/suno_queue_from_blog.json")
+_QM = MUSIC_DIR / "suno_queue_master.json"
+_QL = MUSIC_DIR / "suno_queue_from_blog.json"
 QUEUE_FILE    = _QM if _QM.exists() else _QL
-OUTPUT_DIR    = Path("os.getenv("MUSIC_DIR", str(Path.home() / "MusicaBusiness"))/DISTRO_READY")
-LOG_FILE      = Path("os.getenv("MUSIC_DIR", str(Path.home() / "MusicaBusiness"))/suno_daily_log.json")
-GUMROAD_QUEUE = Path("os.getenv("MUSIC_DIR", str(Path.home() / "MusicaBusiness"))/gumroad_music_queue.json")
-SUNO_PROFILE  = Path("os.getenv("USER_HOME", str(Path.home())) + "/AppData/Local/os.getenv("SUNO_PROFILE", "suno_profile")")
-DEBUG_SS_DIR  = Path("os.getenv("MUSIC_DIR", str(Path.home() / "MusicaBusiness"))/screenshots/suno")  # solo per errori gravi
+OUTPUT_DIR    = MUSIC_DIR / "DISTRO_READY"
+LOG_FILE      = MUSIC_DIR / "suno_daily_log.json"
+GUMROAD_QUEUE = MUSIC_DIR / "gumroad_music_queue.json"
+SUNO_PROFILE  = Path(os.getenv("SUNO_PROFILE", str(Path.home() / "AppData/Local/suno_profile")))
+COOKIES_FILE  = Path(os.getenv("SUNO_COOKIES", str(Path.home() / "suno_cookies.json")))
+DEBUG_SS_DIR  = MUSIC_DIR / "screenshots/suno"  # solo per errori gravi
 
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 DEBUG_SS_DIR.mkdir(parents=True, exist_ok=True)
@@ -42,7 +45,7 @@ MIN_CREDITS     = 10    # ferma se crediti < 10 (1 gen costa 10 crediti)
 def load_cookies():
     if not COOKIES_FILE.exists():
         print(f"❌ Cookie mancanti: {COOKIES_FILE}")
-        print("   Esegui: python os.getenv("USER_HOME", str(Path.home())) + "/renew_suno_cookies.py")
+        print(f"   Esegui: python {Path.home() / 'renew_suno_cookies.py'}")
         return []
     raw = json.loads(COOKIES_FILE.read_text("utf-8"))
     cks = raw.get("cookies", raw) if isinstance(raw, dict) else raw
