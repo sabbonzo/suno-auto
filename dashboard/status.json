@@ -44,9 +44,9 @@
       "unit": "pubblicati",
       "blockers": [
         "0 vendite su 10 prodotti: il collo di bottiglia è il traffico, non la produzione",
-        "Suno Music Automation Kit (€14.99) conteneva il codice rotto del repo — aggiornare lo ZIP con la versione riparata"
+        "Suno Music Automation Kit (€14.99): ZIP v1.1 riparato consegnato il 03/07 — da caricare sul prodotto"
       ],
-      "next": "Definire un canale di traffico (blog, X, SEO Gumroad) prima di pubblicare altri prodotti"
+      "next": "Caricare suno_music_automation_kit_v1.1.zip sul prodotto, poi definire un canale di traffico"
     },
     {
       "id": "kdp-acquario",
@@ -133,7 +133,7 @@
       "total": 7,
       "unit": "script funzionanti",
       "blockers": [],
-      "next": "Riparato il 03/07: tutti gli script compilano di nuovo. Propagare il fix allo ZIP in vendita"
+      "next": "Fix mergiato in main il 03/07 (PR #1). Ritmo umano aggiunto al runner. Kit v1.1 pronto"
     }
   ],
   "agents": [
