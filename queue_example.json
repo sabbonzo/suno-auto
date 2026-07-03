@@ -1,0 +1,14 @@
+[
+  {
+    "title": "La mia prima canzone",
+    "lyrics": "Cammino per la città\nsotto un cielo che non sa\nse piovere o brillare\ncome me, come te.\n\nMa stasera si vola\nsopra ogni parola\ne la musica sola\nci porterà.",
+    "style": "Italian pop cantautorale, chitarra acustica, piano, BPM: 90, melodico, voce maschile sincera",
+    "done": false
+  },
+  {
+    "title": "Notte di interferenze",
+    "lyrics": "Segnali persi nella notte\nfrequenze che non tornano\nma il tuo nome arriva chiaro\nattraverso il rumore.",
+    "style": "Italian nocturne, ambient, synth pad, BPM: 72, voce femminile sussurrata",
+    "done": false
+  }
+]
