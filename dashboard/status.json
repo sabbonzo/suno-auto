@@ -1,0 +1,147 @@
+{
+  "updated": "2026-07-03",
+  "kpi": [
+    { "label": "Ricavi totali", "value": "€0,00", "note": "obiettivo minimo: coprire l'abbonamento" },
+    { "label": "Vendite", "value": "0", "note": "10 prodotti Gumroad — rilevazione 06/06" },
+    { "label": "Coda Suno", "value": "53 / 478", "note": "6 canzoni/giorno (30 crediti free)" },
+    { "label": "Blocchi attivi", "value": "auto", "note": "calcolato dai progetti" }
+  ],
+  "projects": [
+    {
+      "id": "suno-pipeline",
+      "name": "Blog → Suno pipeline",
+      "platform": "Suno",
+      "status": "in_progress",
+      "done": 53,
+      "total": 478,
+      "unit": "canzoni",
+      "blockers": [
+        "Limite crediti piano free: 30/giorno = 6 canzoni → ~71 giorni al completamento"
+      ],
+      "next": "Run giornaliero ore 09:00 (suno_queue_runner.py)"
+    },
+    {
+      "id": "gumroad-bundle",
+      "name": "Bundle musicali Suno",
+      "platform": "Gumroad",
+      "status": "live",
+      "done": 4,
+      "total": 5,
+      "unit": "prodotti live",
+      "blockers": [
+        "gbcawi (Canzoni Personali): ZIP mancante sul prodotto",
+        "Cookies Gumroad scaduti il 26/05 — rinnovare prima di ogni upload"
+      ],
+      "next": "Ricaricare suno_personale_bundle.zip su gbcawi"
+    },
+    {
+      "id": "gumroad-catalogo",
+      "name": "Catalogo prodotti digitali",
+      "platform": "Gumroad",
+      "status": "attention",
+      "done": 10,
+      "total": 10,
+      "unit": "pubblicati",
+      "blockers": [
+        "0 vendite su 10 prodotti: il collo di bottiglia è il traffico, non la produzione",
+        "Suno Music Automation Kit (€14.99) conteneva il codice rotto del repo — aggiornare lo ZIP con la versione riparata"
+      ],
+      "next": "Definire un canale di traffico (blog, X, SEO Gumroad) prima di pubblicare altri prodotti"
+    },
+    {
+      "id": "kdp-acquario",
+      "name": "L'Acquario Sovrano (ebook)",
+      "platform": "Amazon KDP",
+      "status": "in_review",
+      "done": 0,
+      "total": 1,
+      "unit": "in review",
+      "blockers": [
+        "In review Amazon dal 24/05 — stato non più verificato da allora"
+      ],
+      "next": "Controllare il pannello KDP: 40 giorni di review non sono normali"
+    },
+    {
+      "id": "kdp-paperback",
+      "name": "The Oracle Factor (paperback)",
+      "platform": "Amazon KDP",
+      "status": "pending",
+      "done": 0,
+      "total": 1,
+      "unit": "in staging",
+      "blockers": [],
+      "next": "File generato in staging — completare l'upload KDP"
+    },
+    {
+      "id": "d2d-epub",
+      "name": "The Sovereign Aquarium (EPUB, 449 capitoli)",
+      "platform": "Draft2Digital",
+      "status": "blocked",
+      "done": 0,
+      "total": 1,
+      "unit": "da caricare",
+      "blockers": [
+        "Login manuale richiesto — l'automazione non supera l'autenticazione"
+      ],
+      "next": "Sessione manuale: login D2D + upload THE_SOVEREIGN_AQUARIUM.epub (417 KB)"
+    },
+    {
+      "id": "social-x",
+      "name": "Post automatici su X",
+      "platform": "X / Twitter",
+      "status": "blocked",
+      "done": 0,
+      "total": 1,
+      "unit": "canale",
+      "blockers": [
+        "x_cookies.json datato 16/05 — quasi certamente scaduto"
+      ],
+      "next": "Rinnovare i cookie X, poi riattivare social_post_all.py"
+    },
+    {
+      "id": "discord",
+      "name": "Notifiche Discord",
+      "platform": "Discord",
+      "status": "pending",
+      "done": 0,
+      "total": 1,
+      "unit": "webhook",
+      "blockers": [
+        "URL webhook mai configurato in variables/social_config.json"
+      ],
+      "next": "Creare il webhook sul server e incollare l'URL"
+    },
+    {
+      "id": "docsity",
+      "name": "Dispense e appunti (100+ pagine)",
+      "platform": "Docsity",
+      "status": "attention",
+      "done": 1,
+      "total": 1,
+      "unit": "canale attivo",
+      "blockers": [
+        "Canale attivo dal 2025 ma fuori monitoraggio: nessun dato vendite/download collegato al cruscotto"
+      ],
+      "next": "Recuperare le statistiche Docsity e decidere se cross-linkare i prodotti Gumroad nelle dispense"
+    },
+    {
+      "id": "repo-suno-auto",
+      "name": "Repo suno-auto (GitHub)",
+      "platform": "GitHub",
+      "status": "live",
+      "done": 7,
+      "total": 7,
+      "unit": "script funzionanti",
+      "blockers": [],
+      "next": "Riparato il 03/07: tutti gli script compilano di nuovo. Propagare il fix allo ZIP in vendita"
+    }
+  ],
+  "agents": [
+    { "name": "Ollama", "role": "Analisi stile canzoni (phi4-mini + 8 modelli)", "state": "up", "note": "ultimo check 01/06 — riconfermare" },
+    { "name": "Chrome bridge", "role": "Automazione browser (porta 9222)", "state": "up", "note": "profilo chrome_claude_bridge2" },
+    { "name": "OpenClaw gateway", "role": "Gateway agenti locali", "state": "up", "note": "ultimo check 01/06 — riconfermare" },
+    { "name": "Sales Monitor Elite", "role": "Monitoraggio vendite h24", "state": "up", "note": "attivo dal 01/06" },
+    { "name": "suno_queue_runner", "role": "Generazione canzoni giornaliera", "state": "scheduled", "note": "09:00, max 6 canzoni/run" },
+    { "name": "gumroad publisher", "role": "Upload bundle su Gumroad", "state": "blocked", "note": "cookies scaduti 26/05" }
+  ]
+}
