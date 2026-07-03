@@ -15,12 +15,14 @@ from datetime import datetime
 
 sys.stdout.reconfigure(encoding="utf-8")
 
+MUSIC_DIR = Path(os.getenv("MUSIC_DIR", str(Path.home() / "MusicaBusiness")))
+
 from playwright.async_api import async_playwright
 
-SUNO_COOKIES = Path("os.getenv("USER_HOME", str(Path.home())) + "/suno_cookies.json")
-OUTPUT_DIR   = Path("os.getenv("MUSIC_DIR", str(Path.home() / "MusicaBusiness"))/DISTRO_READY")
-SS_DIR       = Path("os.getenv("MUSIC_DIR", str(Path.home() / "MusicaBusiness"))/screenshots/suno")
-LOG_FILE     = Path("os.getenv("MUSIC_DIR", str(Path.home() / "MusicaBusiness"))/suno_daily_log.json")
+SUNO_COOKIES = Path(os.getenv("SUNO_COOKIES", str(Path.home() / "suno_cookies.json")))
+OUTPUT_DIR   = MUSIC_DIR / "DISTRO_READY"
+SS_DIR       = MUSIC_DIR / "screenshots/suno"
+LOG_FILE     = MUSIC_DIR / "suno_daily_log.json"
 
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 SS_DIR.mkdir(parents=True, exist_ok=True)

@@ -8,23 +8,26 @@ Output: MP3 in DISTRO_READY/, queue aggiornata (done=true), gumroad_music_queue.
 1 generazione = 2 canzoni = 10 crediti → 3 gen/giorno = 6 canzoni max.
 """
 import os
-import asyncio, json, sys, re, urllib.request
+import asyncio, json, sys, re, random, urllib.request
 from pathlib import Path
 from datetime import datetime
 
 sys.stdout.reconfigure(encoding="utf-8")
 
+MUSIC_DIR = Path(os.getenv("MUSIC_DIR", str(Path.home() / "MusicaBusiness")))
+
 from playwright.async_api import async_playwright
 
 # Usa queue master se disponibile, altrimenti legacy
-_QM = Path("os.getenv("MUSIC_DIR", str(Path.home() / "MusicaBusiness"))/suno_queue_master.json")
-_QL = Path("os.getenv("MUSIC_DIR", str(Path.home() / "MusicaBusiness"))/suno_queue_from_blog.json")
+_QM = MUSIC_DIR / "suno_queue_master.json"
+_QL = MUSIC_DIR / "suno_queue_from_blog.json"
 QUEUE_FILE    = _QM if _QM.exists() else _QL
-OUTPUT_DIR    = Path("os.getenv("MUSIC_DIR", str(Path.home() / "MusicaBusiness"))/DISTRO_READY")
-LOG_FILE      = Path("os.getenv("MUSIC_DIR", str(Path.home() / "MusicaBusiness"))/suno_daily_log.json")
-GUMROAD_QUEUE = Path("os.getenv("MUSIC_DIR", str(Path.home() / "MusicaBusiness"))/gumroad_music_queue.json")
-SUNO_PROFILE  = Path("os.getenv("USER_HOME", str(Path.home())) + "/AppData/Local/os.getenv("SUNO_PROFILE", "suno_profile")")
-DEBUG_SS_DIR  = Path("os.getenv("MUSIC_DIR", str(Path.home() / "MusicaBusiness"))/screenshots/suno")  # solo per errori gravi
+OUTPUT_DIR    = MUSIC_DIR / "DISTRO_READY"
+LOG_FILE      = MUSIC_DIR / "suno_daily_log.json"
+GUMROAD_QUEUE = MUSIC_DIR / "gumroad_music_queue.json"
+SUNO_PROFILE  = Path(os.getenv("SUNO_PROFILE", str(Path.home() / "AppData/Local/suno_profile")))
+COOKIES_FILE  = Path(os.getenv("SUNO_COOKIES", str(Path.home() / "suno_cookies.json")))
+DEBUG_SS_DIR  = MUSIC_DIR / "screenshots/suno"  # solo per errori gravi
 
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 DEBUG_SS_DIR.mkdir(parents=True, exist_ok=True)
@@ -42,7 +45,7 @@ MIN_CREDITS     = 10    # ferma se crediti < 10 (1 gen costa 10 crediti)
 def load_cookies():
     if not COOKIES_FILE.exists():
         print(f"❌ Cookie mancanti: {COOKIES_FILE}")
-        print("   Esegui: python os.getenv("USER_HOME", str(Path.home())) + "/renew_suno_cookies.py")
+        print(f"   Esegui: python {Path.home() / 'renew_suno_cookies.py'}")
         return []
     raw = json.loads(COOKIES_FILE.read_text("utf-8"))
     cks = raw.get("cookies", raw) if isinstance(raw, dict) else raw
@@ -105,12 +108,36 @@ def append_gumroad_queue(title: str, files: list, style: str, blog: str):
     GUMROAD_QUEUE.write_text(json.dumps(entries, indent=2, ensure_ascii=False), "utf-8")
 
 
+# ── Ritmo umano ──────────────────────────────────────────────────────────────
+# Pause e digitazione con jitter casuale: non per ingannare un anti-bot, ma per
+# non martellare la UI React di Suno (che perde eventi sotto input troppo rapido)
+# e per non farsi throttlare come traffico automatico aggressivo.
+HUMAN = os.getenv("SUNO_HUMAN", "1") != "0"   # SUNO_HUMAN=0 per disattivare
+
+
+async def human_pause(page, lo=350, hi=1200):
+    """Attesa tra due azioni, durata casuale come una persona che pensa/legge."""
+    await page.wait_for_timeout(random.randint(lo, hi) if HUMAN else lo)
+
+
+async def human_type(el, value):
+    """Digita carattere per carattere con delay variabile (~40-160ms)."""
+    if not HUMAN:
+        await el.press_sequentially(value, delay=15)
+        return
+    for ch in value:
+        await el.press_sequentially(ch, delay=random.randint(40, 160))
+        if ch in ".,!?\n" and random.random() < 0.3:
+            await el.page.wait_for_timeout(random.randint(120, 400))
+
+
 async def click_first_visible(page, selectors, label="button"):
     """Cerca e clicca il primo selettore visibile dalla lista. Ritorna True se cliccato."""
     for sel in selectors:
         try:
             el = page.locator(sel).first
             if await el.count() > 0 and await el.is_visible():
+                await human_pause(page, 200, 700)
                 await el.click()
                 return True
         except:
@@ -136,11 +163,11 @@ async def fill_first_visible(page, selectors, value, label="field"):
                         return True
                 except:
                     pass
-                # Tentativo 2: Ctrl+A poi type (per React controlled inputs)
+                # Tentativo 2: Ctrl+A poi type umano (per React controlled inputs)
                 try:
                     await el.press("Control+a")
                     await page.wait_for_timeout(100)
-                    await el.press_sequentially(value, delay=15)
+                    await human_type(el, value)
                     await page.wait_for_timeout(200)
                     return True
                 except:

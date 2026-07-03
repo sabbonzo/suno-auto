@@ -18,10 +18,12 @@ from urllib.parse import urlencode
 sys.stdout.reconfigure(encoding="utf-8")
 sys.stderr.reconfigure(encoding="utf-8")
 
+MUSIC_DIR = Path(os.getenv("MUSIC_DIR", str(Path.home() / "MusicaBusiness")))
+
 # ── Percorsi ──────────────────────────────────────────────────────────────────
-QUEUE_MASTER  = Path("os.getenv("MUSIC_DIR", str(Path.home() / "MusicaBusiness"))/suno_queue_master.json")
-QUEUE_LEGACY  = Path("os.getenv("MUSIC_DIR", str(Path.home() / "MusicaBusiness"))/suno_queue_from_blog.json")
-GUMROAD_QUEUE = Path("os.getenv("MUSIC_DIR", str(Path.home() / "MusicaBusiness"))/gumroad_music_queue.json")
+QUEUE_MASTER  = MUSIC_DIR / "suno_queue_master.json"
+QUEUE_LEGACY  = MUSIC_DIR / "suno_queue_from_blog.json"
+GUMROAD_QUEUE = MUSIC_DIR / "gumroad_music_queue.json"
 
 # ── Blog da scrapare ──────────────────────────────────────────────────────────
 BLOGS = [

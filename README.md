@@ -33,6 +33,19 @@ DAILY_LIMIT=6
 ]
 ```
 
+## Dashboard
+
+Static status dashboard for the whole monetization pipeline (Suno queue, Gumroad,
+KDP, D2D, social, agents). Data lives in `dashboard/status.json`; regenerate with:
+
+```bash
+python dashboard/build_dashboard.py   # writes dashboard/index.html
+```
+
+If `MUSIC_DIR/suno_queue_master.json` exists locally, the Suno queue counters are
+refreshed automatically from it. Everything else is updated by editing
+`status.json` (one entry per project: status, progress, blockers, next action).
+
 ## How it works
 1. Opens Chrome with persistent profile (you log into Suno once manually)
 2. For each pending item: fills title + style → clicks Create → waits for CDN

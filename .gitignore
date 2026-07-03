@@ -1,6 +1,7 @@
 .env
 *.json
 !queue_example.json
+!dashboard/status.json
 __pycache__/
 *.pyc
 *.pyo
