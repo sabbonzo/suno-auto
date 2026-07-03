@@ -8,7 +8,7 @@ Output: MP3 in DISTRO_READY/, queue aggiornata (done=true), gumroad_music_queue.
 1 generazione = 2 canzoni = 10 crediti → 3 gen/giorno = 6 canzoni max.
 """
 import os
-import asyncio, json, sys, re, urllib.request
+import asyncio, json, sys, re, random, urllib.request
 from pathlib import Path
 from datetime import datetime
 
@@ -108,12 +108,36 @@ def append_gumroad_queue(title: str, files: list, style: str, blog: str):
     GUMROAD_QUEUE.write_text(json.dumps(entries, indent=2, ensure_ascii=False), "utf-8")
 
 
+# ── Ritmo umano ──────────────────────────────────────────────────────────────
+# Pause e digitazione con jitter casuale: non per ingannare un anti-bot, ma per
+# non martellare la UI React di Suno (che perde eventi sotto input troppo rapido)
+# e per non farsi throttlare come traffico automatico aggressivo.
+HUMAN = os.getenv("SUNO_HUMAN", "1") != "0"   # SUNO_HUMAN=0 per disattivare
+
+
+async def human_pause(page, lo=350, hi=1200):
+    """Attesa tra due azioni, durata casuale come una persona che pensa/legge."""
+    await page.wait_for_timeout(random.randint(lo, hi) if HUMAN else lo)
+
+
+async def human_type(el, value):
+    """Digita carattere per carattere con delay variabile (~40-160ms)."""
+    if not HUMAN:
+        await el.press_sequentially(value, delay=15)
+        return
+    for ch in value:
+        await el.press_sequentially(ch, delay=random.randint(40, 160))
+        if ch in ".,!?\n" and random.random() < 0.3:
+            await el.page.wait_for_timeout(random.randint(120, 400))
+
+
 async def click_first_visible(page, selectors, label="button"):
     """Cerca e clicca il primo selettore visibile dalla lista. Ritorna True se cliccato."""
     for sel in selectors:
         try:
             el = page.locator(sel).first
             if await el.count() > 0 and await el.is_visible():
+                await human_pause(page, 200, 700)
                 await el.click()
                 return True
         except:
@@ -139,11 +163,11 @@ async def fill_first_visible(page, selectors, value, label="field"):
                         return True
                 except:
                     pass
-                # Tentativo 2: Ctrl+A poi type (per React controlled inputs)
+                # Tentativo 2: Ctrl+A poi type umano (per React controlled inputs)
                 try:
                     await el.press("Control+a")
                     await page.wait_for_timeout(100)
-                    await el.press_sequentially(value, delay=15)
+                    await human_type(el, value)
                     await page.wait_for_timeout(200)
                     return True
                 except:
